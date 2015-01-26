@@ -122,7 +122,16 @@ bkcore.hexgl.ShipControls = function(ctx)
 	this.orientationController = null;
 	this.gamepadController = null
 
-	if(ctx.controlType == 1 && bkcore.controllers.TouchController.isCompatible())
+	if(ctx.controlType == 0 && bkcore.controllers.XboxController.isCompatible())
+	{
+			this.xboxController = new bkcore.controllers.XboxController(
+				function(keys){
+					self.key.left = keys.left;
+					self.key.right = keys.right;
+					self.key.forward = keys.forward;
+				});
+	}
+	else if(ctx.controlType == 1 && bkcore.controllers.TouchController.isCompatible())
 	{
 		this.touchController = new bkcore.controllers.TouchController(
 			domElement, ctx.width/2,
@@ -138,21 +147,6 @@ bkcore.hexgl.ShipControls = function(ctx)
 					else
 						self.key.forward = true;
 				}
-			});
-	}
-	else if(ctx.controlType == 4 && bkcore.controllers.OrientationController.isCompatible())
-	{
-		this.orientationController = new bkcore.controllers.OrientationController(
-			domElement, true,
-			function(state, touch, event){
-				if(event.touches.length >= 4)
-					window.location.reload(false);
-				else if(event.touches.length == 3)
-					ctx.restart();
-				else if(event.touches.length < 1)
-					self.key.forward = false;
-				else
-					self.key.forward = true;
 			});
 	}
 	else if(ctx.controlType == 3 && bkcore.controllers.GamepadController.isCompatible())
